@@ -99,11 +99,12 @@
   </div>
 
   <audio id="successSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
-  <audio id="errorSound" src="Wrong-buzzer-sound-effect.mp3" preload="auto"></audio>
+  <audio id="errorSound" src="buzzer.mp3" preload="auto"></audio>
 
   <script>
     let codeSecret = generateCode();
-    console.log("Code secret : " + codeSecret);
+    console.log("Code secret : " + codeSecret); // Affiche dans F12
+
     let inputCode = "";
 
     function generateCode() {
@@ -140,7 +141,9 @@
         console.log("Nouveau code : " + codeSecret);
       } else {
         document.getElementById("message").textContent = "❌ Code incorrect";
-        document.getElementById("errorSound").play();
+        let errorAudio = document.getElementById("errorSound");
+        errorAudio.volume = 0.2; // Volume doux
+        errorAudio.play();
         document.getElementById("coffreBox").classList.remove("open");
         document.getElementById("porteCoffre").classList.remove("ouverte");
       }
