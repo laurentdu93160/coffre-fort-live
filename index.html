@@ -103,6 +103,7 @@
 
   <script>
     let codeSecret = generateCode();
+    console.log("Code secret : " + codeSecret); // ✅ réactivation pour F12
     let inputCode = "";
 
     function generateCode() {
@@ -136,6 +137,7 @@
         document.getElementById("coffreBox").classList.add("open");
         document.getElementById("porteCoffre").classList.add("ouverte");
         codeSecret = generateCode();
+        console.log("Nouveau code : " + codeSecret);
       } else {
         document.getElementById("message").textContent = "❌ Code incorrect";
         document.getElementById("errorSound").play();
@@ -146,7 +148,6 @@
       updateDisplay();
     }
 
-    // Initial display
     updateDisplay();
   </script>
 </body>
