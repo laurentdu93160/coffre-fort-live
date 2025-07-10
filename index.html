@@ -137,8 +137,7 @@
     }
 
     let codeSecret = genererCode();
-    console.log("Code secret :", codeSecret); // ✅ visible dans F12
-
+    console.log("Code secret :", codeSecret); // ✅ console F12
     let entreCode = [];
     const touches = document.querySelectorAll('.touche');
     const afficheCode = document.getElementById('afficheCode');
@@ -151,38 +150,52 @@
       afficheCode.textContent = entreCode.join('').padEnd(4, '_');
     }
 
+    function verifieCode() {
+      const codeEntre = entreCode.join('');
+      if (codeEntre === codeSecret) {
+        ledVerte.classList.add('clignote');
+        poignee.classList.add('tourne');
+        porte.classList.add('ouvert');
+        setTimeout(() => {
+          ledVerte.classList.remove('clignote');
+          poignee.classList.remove('tourne');
+          porte.classList.remove('ouvert');
+          entreCode = [];
+          codeSecret = genererCode();
+          console.log("Code secret :", codeSecret);
+          mettreAJourAffichage();
+        }, 3000);
+      } else {
+        ledRouge.classList.add('clignote');
+        setTimeout(() => {
+          ledRouge.classList.remove('clignote');
+          entreCode = [];
+          mettreAJourAffichage();
+        }, 1200);
+      }
+    }
+
     touches.forEach(touche => {
       const chiffre = touche.querySelector('text').textContent;
       touche.addEventListener('click', () => {
         if (entreCode.length < 4) {
           entreCode.push(chiffre);
           mettreAJourAffichage();
-        }
-        if (entreCode.length === 4) {
-          const codeEntre = entreCode.join('');
-          if (codeEntre === codeSecret) {
-            ledVerte.classList.add('clignote');
-            poignee.classList.add('tourne');
-            porte.classList.add('ouvert');
-            setTimeout(() => {
-              ledVerte.classList.remove('clignote');
-              poignee.classList.remove('tourne');
-              porte.classList.remove('ouvert');
-              entreCode = [];
-              codeSecret = genererCode();
-              console.log("Code secret :", codeSecret); // ✅ nouveau code affiché
-              mettreAJourAffichage();
-            }, 3000);
-          } else {
-            ledRouge.classList.add('clignote');
-            setTimeout(() => {
-              ledRouge.classList.remove('clignote');
-              entreCode = [];
-              mettreAJourAffichage();
-            }, 1200);
-          }
+          if (entreCode.length === 4) verifieCode();
         }
       });
+    });
+
+    // ✅ Entrée clavier physique activée
+    window.addEventListener('keydown', e => {
+      const key = e.key;
+      if (/^[0-9]$/.test(key)) {
+        if (entreCode.length < 4) {
+          entreCode.push(key);
+          mettreAJourAffichage();
+          if (entreCode.length === 4) verifieCode();
+        }
+      }
     });
 
     mettreAJourAffichage();
