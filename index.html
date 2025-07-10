@@ -7,194 +7,145 @@
     body {
       margin: 0;
       background: linear-gradient(135deg, #0f111a, #1e202b);
+      font-family: sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      overflow: hidden;
-      font-family: sans-serif;
     }
-
-    #coffre {
-      position: relative;
-      width: 340px;
-    }
-
-    svg {
-      width: 100%;
-      height: auto;
-    }
-
-    .code {
-      position: absolute;
-      top: -40px;
-      left: 0;
-      right: 0;
+    #interface {
       text-align: center;
-      font-size: 24px;
       color: #fff;
-      letter-spacing: 8px;
     }
-
+    .code {
+      font-size: 24px;
+      letter-spacing: 6px;
+      margin-bottom: 20px;
+    }
+    .clavier {
+      display: grid;
+      grid-template-columns: repeat(3, 80px);
+      grid-gap: 12px;
+      justify-content: center;
+    }
+    .touche {
+      padding: 20px;
+      background: #444;
+      color: #fff;
+      font-size: 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 4px #222;
+      transition: background 0.2s;
+    }
+    .touche:active {
+      background: #666;
+    }
     .led {
-      transition: opacity 0.2s;
-    }
-
-    .vert {
-      fill: limegreen;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin: 10px auto;
       opacity: 0;
     }
-
-    .rouge {
-      fill: crimson;
-      opacity: 0;
-    }
-
+    .led.verte { background: limegreen; }
+    .led.rouge { background: crimson; }
     .clignote {
       animation: blink 0.3s alternate 6;
     }
-
     @keyframes blink {
       to { opacity: 1; }
-    }
-
-    .poignee {
-      transform-origin: center;
-      transition: transform 1s ease-out;
-    }
-
-    .tourne {
-      transform: rotate(180deg);
-    }
-
-    .porte {
-      transition: transform 1s ease-out;
-    }
-
-    .ouvert {
-      transform: translateX(120px);
-    }
-
-    .touche {
-      cursor: pointer;
-      pointer-events: all;
-    }
-
-    .fondAnime {
-      position: absolute;
-      top: -80px;
-      left: -80px;
-      width: 480px;
-      height: 480px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(0,255,255,0.1) 0%, transparent 70%);
-      animation: pulse 4s infinite;
-      z-index: -1;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.2; }
-      50% { transform: scale(1.3); opacity: 0.4; }
-    }
-
-    text {
-      font-size: 16px;
-      pointer-events: none;
-      user-select: none;
     }
   </style>
 </head>
 <body>
-  <div id="coffre">
-    <div class="fondAnime"></div>
+  <div id="interface">
     <div class="code" id="afficheCode">____</div>
-    <svg viewBox="0 0 300 300">
-      <rect x="10" y="10" width="280" height="280" rx="20" ry="20" fill="#333" stroke="#888" stroke-width="4"/>
-      <circle cx="150" cy="90" r="30" class="poignee" fill="#666" stroke="#aaa" stroke-width="4"/>
-      <circle cx="40" cy="40" r="10" class="led vert"/>
-      <circle cx="260" cy="40" r="10" class="led rouge"/>
-      <rect x="70" y="150" width="160" height="100" fill="#222" stroke="#555" stroke-width="2"/>
-      <g id="clavier">
-        <!-- Touches agrandies -->
-        <g class="touche"><circle cx="100" cy="170" r="20" fill="#999"/><text x="100" y="175" text-anchor="middle" fill="#000">1</text></g>
-        <g class="touche"><circle cx="150" cy="170" r="20" fill="#999"/><text x="150" y="175" text-anchor="middle" fill="#000">2</text></g>
-        <g class="touche"><circle cx="200" cy="170" r="20" fill="#999"/><text x="200" y="175" text-anchor="middle" fill="#000">3</text></g>
-        <g class="touche"><circle cx="100" cy="200" r="20" fill="#999"/><text x="100" y="205" text-anchor="middle" fill="#000">4</text></g>
-        <g class="touche"><circle cx="150" cy="200" r="20" fill="#999"/><text x="150" y="205" text-anchor="middle" fill="#000">5</text></g>
-        <g class="touche"><circle cx="200" cy="200" r="20" fill="#999"/><text x="200" y="205" text-anchor="middle" fill="#000">6</text></g>
-        <g class="touche"><circle cx="100" cy="230" r="20" fill="#999"/><text x="100" y="235" text-anchor="middle" fill="#000">7</text></g>
-        <g class="touche"><circle cx="150" cy="230" r="20" fill="#999"/><text x="150" y="235" text-anchor="middle" fill="#000">8</text></g>
-        <g class="touche"><circle cx="200" cy="230" r="20" fill="#999"/><text x="200" y="235" text-anchor="middle" fill="#000">9</text></g>
-        <g class="touche"><circle cx="150" cy="260" r="20" fill="#999"/><text x="150" y="265" text-anchor="middle" fill="#000">0</text></g>
-      </g>
-      <rect x="10" y="10" width="280" height="280" rx="20" ry="20" fill="none" stroke="#fff" stroke-width="4" class="porte"/>
-    </svg>
+    <div class="led verte" id="ledVerte"></div>
+    <div class="led rouge" id="ledRouge"></div>
+    <div class="clavier" id="clavier">
+      <!-- Chiffres 1 à 9 -->
+      <div class="touche">1</div><div class="touche">2</div><div class="touche">3</div>
+      <div class="touche">4</div><div class="touche">5</div><div class="touche">6</div>
+      <div class="touche">7</div><div class="touche">8</div><div class="touche">9</div>
+      <!-- Effacer, 0, OK -->
+      <div class="touche" data-action="clear">Effacer</div>
+      <div class="touche">0</div>
+      <div class="touche" data-action="ok">OK</div>
+    </div>
+    <!-- Son d'ouverture -->
+    <audio id="sonOuverture" src="https://assets.mixkit.co/sfx/preview/mixkit-lock-opening-2870.mp3"></audio>
   </div>
 
   <script>
+    let codeSecret = genererCode();
+    console.log("Code secret :", codeSecret);
+    let entreCode = [];
+    const afficheCode = document.getElementById("afficheCode");
+    const clavier = document.getElementById("clavier");
+    const ledVerte = document.getElementById("ledVerte");
+    const ledRouge = document.getElementById("ledRouge");
+    const sonOuverture = document.getElementById("sonOuverture");
+
     function genererCode() {
       return String(Math.floor(1000 + Math.random() * 9000));
     }
-
-    let codeSecret = genererCode();
-    console.log("Code secret :", codeSecret); // ✅ console F12
-    let entreCode = [];
-    const touches = document.querySelectorAll('.touche');
-    const afficheCode = document.getElementById('afficheCode');
-    const ledRouge = document.querySelector('.led.rouge');
-    const ledVerte = document.querySelector('.led.vert');
-    const poignee = document.querySelector('.poignee');
-    const porte = document.querySelector('.porte');
 
     function mettreAJourAffichage() {
       afficheCode.textContent = entreCode.join('').padEnd(4, '_');
     }
 
     function verifieCode() {
-      const codeEntre = entreCode.join('');
-      if (codeEntre === codeSecret) {
-        ledVerte.classList.add('clignote');
-        poignee.classList.add('tourne');
-        porte.classList.add('ouvert');
+      if (entreCode.join('') === codeSecret) {
+        ledVerte.classList.add("clignote");
+        sonOuverture.play();
         setTimeout(() => {
-          ledVerte.classList.remove('clignote');
-          poignee.classList.remove('tourne');
-          porte.classList.remove('ouvert');
-          entreCode = [];
+          ledVerte.classList.remove("clignote");
           codeSecret = genererCode();
           console.log("Code secret :", codeSecret);
+          entreCode = [];
           mettreAJourAffichage();
         }, 3000);
       } else {
-        ledRouge.classList.add('clignote');
+        ledRouge.classList.add("clignote");
         setTimeout(() => {
-          ledRouge.classList.remove('clignote');
+          ledRouge.classList.remove("clignote");
           entreCode = [];
           mettreAJourAffichage();
         }, 1200);
       }
     }
 
-    touches.forEach(touche => {
-      const chiffre = touche.querySelector('text').textContent;
-      touche.addEventListener('click', () => {
+    clavier.addEventListener("click", e => {
+      const txt = e.target.textContent;
+      if (!e.target.classList.contains("touche")) return;
+
+      if (e.target.dataset.action === "clear") {
+        entreCode = [];
+        mettreAJourAffichage();
+      } else if (e.target.dataset.action === "ok") {
+        if (entreCode.length === 4) verifieCode();
+      } else {
         if (entreCode.length < 4) {
-          entreCode.push(chiffre);
+          entreCode.push(txt);
           mettreAJourAffichage();
-          if (entreCode.length === 4) verifieCode();
         }
-      });
+      }
     });
 
-    // ✅ Entrée clavier physique activée
-    window.addEventListener('keydown', e => {
+    window.addEventListener("keydown", e => {
       const key = e.key;
       if (/^[0-9]$/.test(key)) {
         if (entreCode.length < 4) {
           entreCode.push(key);
           mettreAJourAffichage();
-          if (entreCode.length === 4) verifieCode();
         }
+      } else if (key === "Backspace") {
+        entreCode = [];
+        mettreAJourAffichage();
+      } else if (key === "Enter") {
+        if (entreCode.length === 4) verifieCode();
       }
     });
 
