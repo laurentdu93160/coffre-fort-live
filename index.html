@@ -99,24 +99,4 @@
   </div>
 
   <audio id="successSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
-  <audio id="errorSound" src="buzzer.mp3" preload="auto"></audio>
-
-  <script>
-    let codeSecret = generateCode();
-    console.log("Code secret : " + codeSecret);
-    let inputCode = "";
-
-    function generateCode() {
-      return Math.floor(1000 + Math.random() * 9000).toString();
-    }
-
-    function press(num) {
-      if (inputCode.length < 4) {
-        inputCode += num;
-        updateDisplay();
-      }
-    }
-
-    function updateDisplay() {
-      let display = inputCode.padEnd(4, "_");
-      document
+  <audio id="errorSound" src="buzzer.mp3
