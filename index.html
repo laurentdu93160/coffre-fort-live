@@ -2,163 +2,185 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Coffre-Fort</title>
+  <title>Coffre-fort Live</title>
   <style>
     body {
-      background-color: #111;
-      color: #fff;
-      font-family: monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
       margin: 0;
-    }
-    .coffre {
-      background: #222;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px #000;
-      text-align: center;
-      transition: all 0.5s ease;
-    }
-    .coffre.open {
-      background: linear-gradient(to right, #0f0, #333);
-      box-shadow: 0 0 40px #0f0;
-      transform: scale(1.05);
-    }
-    .porte {
-      width: 200px;
-      height: 100px;
-      background-color: #444;
-      border: 5px solid #222;
-      border-radius: 8px;
-      margin: 20px auto;
-      transition: transform 0.5s ease, opacity 0.5s ease;
-      transform-origin: left center;
-    }
-    .porte.ouverte {
-      transform: rotateY(100deg);
-      opacity: 0.4;
-    }
-    .display {
-      font-size: 2em;
-      background: #000;
-      color: #0f0;
-      padding: 10px 20px;
-      margin-bottom: 20px;
-      border: 2px solid #0f0;
-      border-radius: 5px;
-      letter-spacing: 10px;
-    }
-    .keypad {
-      display: grid;
-      grid-template-columns: repeat(3, 60px);
-      gap: 10px;
+      background: linear-gradient(135deg, #0f111a, #1e202b);
+      display: flex;
       justify-content: center;
-      transition: background-color 0.3s ease;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      font-family: sans-serif;
     }
-    .keypad button {
-      font-size: 1.5em;
-      padding: 15px;
-      border: none;
-      border-radius: 8px;
-      background-color: #333;
+
+    #coffre {
+      position: relative;
+      width: 300px;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+    }
+
+    .code {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 24px;
       color: #fff;
+      letter-spacing: 8px;
+    }
+
+    .led {
+      transition: opacity 0.2s;
+    }
+
+    .vert {
+      fill: limegreen;
+      opacity: 0;
+    }
+
+    .rouge {
+      fill: crimson;
+      opacity: 0;
+    }
+
+    .clignote {
+      animation: blink 0.3s alternate 6;
+    }
+
+    @keyframes blink {
+      to { opacity: 1; }
+    }
+
+    .poignee {
+      transform-origin: center;
+      transition: transform 1s ease-out;
+    }
+
+    .tourne {
+      transform: rotate(180deg);
+    }
+
+    .porte {
+      transition: transform 1s ease-out;
+    }
+
+    .ouvert {
+      transform: translateX(120px);
+    }
+
+    .touche {
       cursor: pointer;
     }
-    .keypad button:hover {
-      background-color: #555;
+
+    .fondAnime {
+      position: absolute;
+      top: -80px;
+      left: -80px;
+      width: 460px;
+      height: 460px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,255,255,0.1) 0%, transparent 70%);
+      animation: pulse 4s infinite;
+      z-index: -1;
     }
-    .keypad.error {
-      background-color: #800;
-      border-radius: 10px;
-      padding: 10px;
-    }
-    .message {
-      margin-top: 15px;
-      font-size: 1.2em;
-      height: 1.5em;
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.2; }
+      50% { transform: scale(1.3); opacity: 0.4; }
     }
   </style>
 </head>
 <body>
-  <div class="coffre" id="coffreBox">
-    <div class="porte" id="porteCoffre"></div>
-    <div class="display" id="codeDisplay">____</div>
-    <div class="keypad" id="keypad">
-      <button onclick="press('1')">1</button>
-      <button onclick="press('2')">2</button>
-      <button onclick="press('3')">3</button>
-      <button onclick="press('4')">4</button>
-      <button onclick="press('5')">5</button>
-      <button onclick="press('6')">6</button>
-      <button onclick="press('7')">7</button>
-      <button onclick="press('8')">8</button>
-      <button onclick="press('9')">9</button>
-      <button onclick="clearCode()">C</button>
-      <button onclick="press('0')">0</button>
-      <button onclick="checkCode()">OK</button>
-    </div>
-    <div class="message" id="message"></div>
+  <div id="coffre">
+    <div class="fondAnime"></div>
+    <div class="code" id="afficheCode">____</div>
+    <svg viewBox="0 0 300 300">
+      <rect x="10" y="10" width="280" height="280" rx="20" ry="20" fill="#333" stroke="#888" stroke-width="4"/>
+      <circle cx="150" cy="90" r="30" class="poignee" fill="#666" stroke="#aaa" stroke-width="4"/>
+      <circle cx="40" cy="40" r="10" class="led vert"/>
+      <circle cx="260" cy="40" r="10" class="led rouge"/>
+      <rect x="70" y="150" width="160" height="100" fill="#222" stroke="#555" stroke-width="2"/>
+      <!-- Boutons du clavier -->
+      <g id="clavier">
+        <!-- rangée 1 -->
+        <circle cx="100" cy="170" r="12" class="touche" fill="#999"/><text x="100" y="175" font-size="12" text-anchor="middle" fill="#000">1</text>
+        <circle cx="150" cy="170" r="12" class="touche" fill="#999"/><text x="150" y="175" font-size="12" text-anchor="middle" fill="#000">2</text>
+        <circle cx="200" cy="170" r="12" class="touche" fill="#999"/><text x="200" y="175" font-size="12" text-anchor="middle" fill="#000">3</text>
+        <!-- rangée 2 -->
+        <circle cx="100" cy="200" r="12" class="touche" fill="#999"/><text x="100" y="205" font-size="12" text-anchor="middle" fill="#000">4</text>
+        <circle cx="150" cy="200" r="12" class="touche" fill="#999"/><text x="150" y="205" font-size="12" text-anchor="middle" fill="#000">5</text>
+        <circle cx="200" cy="200" r="12" class="touche" fill="#999"/><text x="200" y="205" font-size="12" text-anchor="middle" fill="#000">6</text>
+        <!-- rangée 3 -->
+        <circle cx="100" cy="230" r="12" class="touche" fill="#999"/><text x="100" y="235" font-size="12" text-anchor="middle" fill="#000">7</text>
+        <circle cx="150" cy="230" r="12" class="touche" fill="#999"/><text x="150" y="235" font-size="12" text-anchor="middle" fill="#000">8</text>
+        <circle cx="200" cy="230" r="12" class="touche" fill="#999"/><text x="200" y="235" font-size="12" text-anchor="middle" fill="#000">9</text>
+        <!-- rangée 4 -->
+        <circle cx="150" cy="260" r="12" class="touche" fill="#999"/><text x="150" y="265" font-size="12" text-anchor="middle" fill="#000">0</text>
+      </g>
+      <!-- Porte -->
+      <rect x="10" y="10" width="280" height="280" rx="20" ry="20" fill="none" stroke="#fff" stroke-width="4" class="porte"/>
+    </svg>
   </div>
 
-  <audio id="successSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
-
   <script>
-    let codeSecret = generateCode();
-    console.log("Code secret : " + codeSecret);
-    let inputCode = "";
+    let codeSecret = genererCode();
+    let entreCode = [];
+    const touches = document.querySelectorAll('.touche');
+    const afficheCode = document.getElementById('afficheCode');
+    const ledRouge = document.querySelector('.led.rouge');
+    const ledVerte = document.querySelector('.led.vert');
+    const poignee = document.querySelector('.poignee');
+    const porte = document.querySelector('.porte');
 
-    function generateCode() {
-      return Math.floor(1000 + Math.random() * 9000).toString();
+    function genererCode() {
+      return String(Math.floor(1000 + Math.random() * 9000));
     }
 
-    function press(num) {
-      if (inputCode.length < 4) {
-        inputCode += num;
-        updateDisplay();
-      }
+    function mettreAJourAffichage() {
+      afficheCode.textContent = entreCode.map(n => n).join('').padEnd(4, '_');
     }
 
-    function updateDisplay() {
-      const display = inputCode.padEnd(4, "_");
-      document.getElementById("codeDisplay").textContent = display;
-    }
+    touches.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        const chiffre = btn.nextElementSibling.textContent;
+        if (entreCode.length < 4) {
+          entreCode.push(chiffre);
+          mettreAJourAffichage();
+        }
+        if (entreCode.length === 4) {
+          const codeEntre = entreCode.join('');
+          if (codeEntre === codeSecret) {
+            ledVerte.classList.add('clignote');
+            poignee.classList.add('tourne');
+            porte.classList.add('ouvert');
+            setTimeout(() => {
+              ledVerte.classList.remove('clignote');
+              poignee.classList.remove('tourne');
+              porte.classList.remove('ouvert');
+              entreCode = [];
+              codeSecret = genererCode();
+              mettreAJourAffichage();
+            }, 3000);
+          } else {
+            ledRouge.classList.add('clignote');
+            setTimeout(() => {
+              ledRouge.classList.remove('clignote');
+              entreCode = [];
+              mettreAJourAffichage();
+            }, 1200);
+          }
+        }
+      });
+    });
 
-    function clearCode() {
-      inputCode = "";
-      updateDisplay();
-      document.getElementById("message").textContent = "";
-      document.getElementById("coffreBox").classList.remove("open");
-      document.getElementById("porteCoffre").classList.remove("ouverte");
-      document.getElementById("keypad").classList.remove("error");
-    }
-
-    function checkCode() {
-      if (inputCode === codeSecret) {
-        document.getElementById("message").textContent = "✅ Coffre ouvert !";
-        document.getElementById("successSound").play();
-        document.getElementById("coffreBox").classList.add("open");
-        document.getElementById("porteCoffre").classList.add("ouverte");
-        codeSecret = generateCode();
-        console.log("Nouveau code : " + codeSecret);
-      } else {
-        document.getElementById("message").textContent = "❌ Code incorrect";
-        const keypad = document.getElementById("keypad");
-        keypad.classList.add("error");
-        setTimeout(() => {
-          keypad.classList.remove("error");
-        }, 1000);
-        document.getElementById("coffreBox").classList.remove("open");
-        document.getElementById("porteCoffre").classList.remove("ouverte");
-      }
-      inputCode = "";
-      updateDisplay();
-    }
-
-    updateDisplay();
+    mettreAJourAffichage();
   </script>
 </body>
 </html>
