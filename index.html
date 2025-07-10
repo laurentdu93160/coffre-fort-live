@@ -125,7 +125,7 @@
 
   <script>
     let codeSecret = genererCode();
-    console.log("Code secret :", codeSecret);  // ✅ Affiche dans la console F12
+    console.log("Code secret :", codeSecret); // ✅ visible dans F12
     let entreCode = [];
     const touches = document.querySelectorAll('.touche');
     const afficheCode = document.getElementById('afficheCode');
@@ -139,7 +139,7 @@
     }
 
     function mettreAJourAffichage() {
-      afficheCode.textContent = entreCode.map(n => n).join('').padEnd(4, '_');
+      afficheCode.textContent = entreCode.join('').padEnd(4, '_');
     }
 
     touches.forEach(btn => {
@@ -161,7 +161,7 @@
               porte.classList.remove('ouvert');
               entreCode = [];
               codeSecret = genererCode();
-              console.log("Code secret :", codeSecret); // ✅ mis à jour
+              console.log("Code secret :", codeSecret); // ✅ code renouvelé visible
               mettreAJourAffichage();
             }, 3000);
           } else {
