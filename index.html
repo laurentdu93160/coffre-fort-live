@@ -71,4 +71,85 @@
       background-color: #555;
     }
     .message {
-      margin-top
+      margin-top: 15px;
+      font-size: 1.2em;
+      height: 1.5em;
+    }
+  </style>
+</head>
+<body>
+  <div class="coffre" id="coffreBox">
+    <div class="porte" id="porteCoffre"></div>
+    <div class="display" id="codeDisplay">____</div>
+    <div class="keypad">
+      <button onclick="press('1')">1</button>
+      <button onclick="press('2')">2</button>
+      <button onclick="press('3')">3</button>
+      <button onclick="press('4')">4</button>
+      <button onclick="press('5')">5</button>
+      <button onclick="press('6')">6</button>
+      <button onclick="press('7')">7</button>
+      <button onclick="press('8')">8</button>
+      <button onclick="press('9')">9</button>
+      <button onclick="clearCode()">C</button>
+      <button onclick="press('0')">0</button>
+      <button onclick="checkCode()">OK</button>
+    </div>
+    <div class="message" id="message"></div>
+  </div>
+
+  <audio id="successSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
+  <audio id="errorSound" src="Wrong-buzzer-sound-effect.mp3" preload="auto"></audio>
+
+  <script>
+    let codeSecret = generateCode();
+    console.log("Code secret : " + codeSecret); // affichage dans F12
+
+    let inputCode = "";
+
+    function generateCode() {
+      return Math.floor(1000 + Math.random() * 9000).toString();
+    }
+
+    function press(num) {
+      if (inputCode.length < 4) {
+        inputCode += num;
+        updateDisplay();
+      }
+    }
+
+    function updateDisplay() {
+      let display = inputCode.padEnd(4, "_");
+      document.getElementById("codeDisplay").textContent = display;
+    }
+
+    function clearCode() {
+      inputCode = "";
+      updateDisplay();
+      document.getElementById("message").textContent = "";
+      document.getElementById("coffreBox").classList.remove("open");
+      document.getElementById("porteCoffre").classList.remove("ouverte");
+    }
+
+    function checkCode() {
+      if (inputCode === codeSecret) {
+        document.getElementById("message").textContent = "✅ Coffre ouvert !";
+        document.getElementById("successSound").play();
+        document.getElementById("coffreBox").classList.add("open");
+        document.getElementById("porteCoffre").classList.add("ouverte");
+        codeSecret = generateCode();
+        console.log("Nouveau code : " + codeSecret);
+      } else {
+        document.getElementById("message").textContent = "❌ Code incorrect";
+        document.getElementById("errorSound").play();
+        document.getElementById("coffreBox").classList.remove("open");
+        document.getElementById("porteCoffre").classList.remove("ouverte");
+      }
+      inputCode = "";
+      updateDisplay();
+    }
+
+    updateDisplay();
+  </script>
+</body>
+</html>
