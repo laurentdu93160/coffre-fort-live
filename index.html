@@ -17,7 +17,7 @@
 
     #coffre {
       position: relative;
-      width: 300px;
+      width: 340px;
     }
 
     svg {
@@ -77,14 +77,15 @@
 
     .touche {
       cursor: pointer;
+      pointer-events: all;
     }
 
     .fondAnime {
       position: absolute;
       top: -80px;
       left: -80px;
-      width: 460px;
-      height: 460px;
+      width: 480px;
+      height: 480px;
       border-radius: 50%;
       background: radial-gradient(circle, rgba(0,255,255,0.1) 0%, transparent 70%);
       animation: pulse 4s infinite;
@@ -94,6 +95,12 @@
     @keyframes pulse {
       0%, 100% { transform: scale(1); opacity: 0.2; }
       50% { transform: scale(1.3); opacity: 0.4; }
+    }
+
+    text {
+      font-size: 16px;
+      pointer-events: none;
+      user-select: none;
     }
   </style>
 </head>
@@ -108,24 +115,30 @@
       <circle cx="260" cy="40" r="10" class="led rouge"/>
       <rect x="70" y="150" width="160" height="100" fill="#222" stroke="#555" stroke-width="2"/>
       <g id="clavier">
-        <circle cx="100" cy="170" r="12" class="touche" fill="#999"/><text x="100" y="175" font-size="12" text-anchor="middle" fill="#000">1</text>
-        <circle cx="150" cy="170" r="12" class="touche" fill="#999"/><text x="150" y="175" font-size="12" text-anchor="middle" fill="#000">2</text>
-        <circle cx="200" cy="170" r="12" class="touche" fill="#999"/><text x="200" y="175" font-size="12" text-anchor="middle" fill="#000">3</text>
-        <circle cx="100" cy="200" r="12" class="touche" fill="#999"/><text x="100" y="205" font-size="12" text-anchor="middle" fill="#000">4</text>
-        <circle cx="150" cy="200" r="12" class="touche" fill="#999"/><text x="150" y="205" font-size="12" text-anchor="middle" fill="#000">5</text>
-        <circle cx="200" cy="200" r="12" class="touche" fill="#999"/><text x="200" y="205" font-size="12" text-anchor="middle" fill="#000">6</text>
-        <circle cx="100" cy="230" r="12" class="touche" fill="#999"/><text x="100" y="235" font-size="12" text-anchor="middle" fill="#000">7</text>
-        <circle cx="150" cy="230" r="12" class="touche" fill="#999"/><text x="150" y="235" font-size="12" text-anchor="middle" fill="#000">8</text>
-        <circle cx="200" cy="230" r="12" class="touche" fill="#999"/><text x="200" y="235" font-size="12" text-anchor="middle" fill="#000">9</text>
-        <circle cx="150" cy="260" r="12" class="touche" fill="#999"/><text x="150" y="265" font-size="12" text-anchor="middle" fill="#000">0</text>
+        <!-- Touches agrandies -->
+        <g class="touche"><circle cx="100" cy="170" r="20" fill="#999"/><text x="100" y="175" text-anchor="middle" fill="#000">1</text></g>
+        <g class="touche"><circle cx="150" cy="170" r="20" fill="#999"/><text x="150" y="175" text-anchor="middle" fill="#000">2</text></g>
+        <g class="touche"><circle cx="200" cy="170" r="20" fill="#999"/><text x="200" y="175" text-anchor="middle" fill="#000">3</text></g>
+        <g class="touche"><circle cx="100" cy="200" r="20" fill="#999"/><text x="100" y="205" text-anchor="middle" fill="#000">4</text></g>
+        <g class="touche"><circle cx="150" cy="200" r="20" fill="#999"/><text x="150" y="205" text-anchor="middle" fill="#000">5</text></g>
+        <g class="touche"><circle cx="200" cy="200" r="20" fill="#999"/><text x="200" y="205" text-anchor="middle" fill="#000">6</text></g>
+        <g class="touche"><circle cx="100" cy="230" r="20" fill="#999"/><text x="100" y="235" text-anchor="middle" fill="#000">7</text></g>
+        <g class="touche"><circle cx="150" cy="230" r="20" fill="#999"/><text x="150" y="235" text-anchor="middle" fill="#000">8</text></g>
+        <g class="touche"><circle cx="200" cy="230" r="20" fill="#999"/><text x="200" y="235" text-anchor="middle" fill="#000">9</text></g>
+        <g class="touche"><circle cx="150" cy="260" r="20" fill="#999"/><text x="150" y="265" text-anchor="middle" fill="#000">0</text></g>
       </g>
       <rect x="10" y="10" width="280" height="280" rx="20" ry="20" fill="none" stroke="#fff" stroke-width="4" class="porte"/>
     </svg>
   </div>
 
   <script>
+    function genererCode() {
+      return String(Math.floor(1000 + Math.random() * 9000));
+    }
+
     let codeSecret = genererCode();
     console.log("Code secret :", codeSecret); // ✅ visible dans F12
+
     let entreCode = [];
     const touches = document.querySelectorAll('.touche');
     const afficheCode = document.getElementById('afficheCode');
@@ -134,17 +147,13 @@
     const poignee = document.querySelector('.poignee');
     const porte = document.querySelector('.porte');
 
-    function genererCode() {
-      return String(Math.floor(1000 + Math.random() * 9000));
-    }
-
     function mettreAJourAffichage() {
       afficheCode.textContent = entreCode.join('').padEnd(4, '_');
     }
 
-    touches.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const chiffre = btn.nextElementSibling.textContent;
+    touches.forEach(touche => {
+      const chiffre = touche.querySelector('text').textContent;
+      touche.addEventListener('click', () => {
         if (entreCode.length < 4) {
           entreCode.push(chiffre);
           mettreAJourAffichage();
@@ -161,7 +170,7 @@
               porte.classList.remove('ouvert');
               entreCode = [];
               codeSecret = genererCode();
-              console.log("Code secret :", codeSecret); // ✅ code renouvelé visible
+              console.log("Code secret :", codeSecret); // ✅ nouveau code affiché
               mettreAJourAffichage();
             }, 3000);
           } else {
