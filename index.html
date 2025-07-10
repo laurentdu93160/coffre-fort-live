@@ -1,50 +1,65 @@
+<!-- Le fichier complet est prêt — voici la balise HTML d'ouverture -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Coffre-fort Live</title>
+  <meta charset="UTF-8">
+  <title>Coffre-fort Réaliste</title>
   <style>
+    /* Styles visuels globaux */
     body {
       margin: 0;
-      background: linear-gradient(135deg, #0f111a, #1e202b);
+      background: #0f111a;
       font-family: sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
-    #interface {
-      text-align: center;
-      color: #fff;
-    }
-    .code {
-      font-size: 24px;
-      letter-spacing: 6px;
-      margin-bottom: 20px;
-    }
-    .clavier {
-      display: grid;
-      grid-template-columns: repeat(3, 80px);
-      grid-gap: 12px;
-      justify-content: center;
-    }
-    .touche {
+    #coffre {
+      position: relative;
+      width: 400px;
+      height: 400px;
+      background: #333;
+      border-radius: 12px;
+      box-shadow: 0 0 25px #000 inset, 0 0 15px #0f0; /* halo vert */
       padding: 20px;
-      background: #444;
-      color: #fff;
-      font-size: 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      user-select: none;
-      box-shadow: 0 4px #222;
-      transition: background 0.2s;
+      transition: box-shadow 0.5s ease;
     }
-    .touche:active {
-      background: #666;
+    .halo-actif {
+      box-shadow: 0 0 60px 15px #0f0;
+    }
+    .poignee {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #aaa;
+      position: absolute;
+      top: 50px;
+      left: 320px;
+      transform-origin: center;
+      transition: transform 1s ease;
+    }
+    .poignee.tourne {
+      transform: rotate(90deg);
+    }
+    .porte {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #444;
+      border-radius: 12px;
+      transform-origin: left;
+      transition: transform 1s ease;
+      z-index: 2;
+    }
+    .porte.ouverte {
+      transform: rotateY(-100deg);
     }
     .led {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       margin: 10px auto;
       opacity: 0;
@@ -54,27 +69,56 @@
     .clignote {
       animation: blink 0.3s alternate 6;
     }
-    @keyframes blink {
-      to { opacity: 1; }
+    @keyframes blink { to { opacity: 1; } }
+    .code { font-size: 20px; letter-spacing: 8px; text-align: center; color: #fff; margin-bottom: 10px; }
+    .clavier {
+      display: grid;
+      grid-template-columns: repeat(3, 90px);
+      grid-gap: 12px;
+      justify-content: center;
+      margin-bottom: 10px;
     }
+    .touche {
+      padding: 20px;
+      font-size: 22px;
+      background: #555;
+      color: #fff;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px #222;
+      user-select: none;
+      transition: background 0.3s;
+    }
+    .touche:active {
+      background: #777;
+    }
+    #messageCode {
+      text-align: center;
+      font-size: 16px;
+      margin-top: 5px;
+      font-weight: bold;
+    }
+    .vert { color: limegreen; }
+    .rouge { color: crimson; }
+    .bleu { color: #00f0ff; }
   </style>
 </head>
 <body>
-  <div id="interface">
+  <div id="coffre">
+    <div class="porte" id="porte"></div>
+    <div class="poignee" id="poignee"></div>
     <div class="code" id="afficheCode">____</div>
     <div class="led verte" id="ledVerte"></div>
     <div class="led rouge" id="ledRouge"></div>
     <div class="clavier" id="clavier">
-      <!-- Chiffres 1 à 9 -->
       <div class="touche">1</div><div class="touche">2</div><div class="touche">3</div>
       <div class="touche">4</div><div class="touche">5</div><div class="touche">6</div>
       <div class="touche">7</div><div class="touche">8</div><div class="touche">9</div>
-      <!-- Effacer, 0, OK -->
       <div class="touche" data-action="clear">Effacer</div>
       <div class="touche">0</div>
       <div class="touche" data-action="ok">OK</div>
     </div>
-    <!-- Son d'ouverture -->
+    <div id="messageCode"></div>
     <audio id="sonOuverture" src="https://assets.mixkit.co/sfx/preview/mixkit-lock-opening-2870.mp3"></audio>
   </div>
 
@@ -86,7 +130,11 @@
     const clavier = document.getElementById("clavier");
     const ledVerte = document.getElementById("ledVerte");
     const ledRouge = document.getElementById("ledRouge");
-    const sonOuverture = document.getElementById("sonOuverture");
+    const son = document.getElementById("sonOuverture");
+    const poignee = document.getElementById("poignee");
+    const porte = document.getElementById("porte");
+    const message = document.getElementById("messageCode");
+    const coffre = document.getElementById("coffre");
 
     function genererCode() {
       return String(Math.floor(1000 + Math.random() * 9000));
@@ -96,19 +144,34 @@
       afficheCode.textContent = entreCode.join('').padEnd(4, '_');
     }
 
+    function afficherMessage(txt, couleur, duree) {
+      message.textContent = txt;
+      message.className = couleur;
+      setTimeout(() => message.textContent = "", duree);
+    }
+
     function verifieCode() {
       if (entreCode.join('') === codeSecret) {
         ledVerte.classList.add("clignote");
-        sonOuverture.play();
+        coffre.classList.add("halo-actif");
+        poignee.classList.add("tourne");
+        porte.classList.add("ouverte");
+        son.play();
+        afficherMessage("Coffre déverrouillé", "vert", 5000);
         setTimeout(() => {
+          porte.classList.remove("ouverte");
+          poignee.classList.remove("tourne");
           ledVerte.classList.remove("clignote");
+          coffre.classList.remove("halo-actif");
           codeSecret = genererCode();
           console.log("Code secret :", codeSecret);
+          afficherMessage("Nouveau code généré", "bleu", 2000);
           entreCode = [];
           mettreAJourAffichage();
-        }, 3000);
+        }, 5000);
       } else {
         ledRouge.classList.add("clignote");
+        afficherMessage("Code incorrect", "rouge", 1200);
         setTimeout(() => {
           ledRouge.classList.remove("clignote");
           entreCode = [];
