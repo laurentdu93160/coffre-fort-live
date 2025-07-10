@@ -99,7 +99,7 @@
   </div>
 
   <audio id="successSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
-  <audio id="errorSound" src="Wrong-buzzer-sound-effect.mp3" preload="auto"></audio>
+  <audio id="errorSound" src="buzzer.mp3" preload="auto"></audio>
 
   <script>
     let codeSecret = generateCode();
@@ -119,36 +119,4 @@
 
     function updateDisplay() {
       let display = inputCode.padEnd(4, "_");
-      document.getElementById("codeDisplay").textContent = display;
-    }
-
-    function clearCode() {
-      inputCode = "";
-      updateDisplay();
-      document.getElementById("message").textContent = "";
-      document.getElementById("coffreBox").classList.remove("open");
-      document.getElementById("porteCoffre").classList.remove("ouverte");
-    }
-
-    function checkCode() {
-      if (inputCode === codeSecret) {
-        document.getElementById("message").textContent = "✅ Coffre ouvert !";
-        document.getElementById("successSound").play();
-        document.getElementById("coffreBox").classList.add("open");
-        document.getElementById("porteCoffre").classList.add("ouverte");
-        codeSecret = generateCode();
-        console.log("Nouveau code : " + codeSecret);
-      } else {
-        document.getElementById("message").textContent = "❌ Code incorrect";
-        document.getElementById("errorSound").play();
-        document.getElementById("coffreBox").classList.remove("open");
-        document.getElementById("porteCoffre").classList.remove("ouverte");
-      }
-      inputCode = "";
-      updateDisplay();
-    }
-
-    updateDisplay();
-  </script>
-</body>
-</html>
+      document
