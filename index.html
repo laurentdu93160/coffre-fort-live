@@ -57,6 +57,7 @@
       grid-template-columns: repeat(3, 60px);
       gap: 10px;
       justify-content: center;
+      transition: background-color 0.3s ease;
     }
     .keypad button {
       font-size: 1.5em;
@@ -70,6 +71,11 @@
     .keypad button:hover {
       background-color: #555;
     }
+    .keypad.error {
+      background-color: #800;
+      border-radius: 10px;
+      padding: 10px;
+    }
     .message {
       margin-top: 15px;
       font-size: 1.2em;
@@ -81,7 +87,7 @@
   <div class="coffre" id="coffreBox">
     <div class="porte" id="porteCoffre"></div>
     <div class="display" id="codeDisplay">____</div>
-    <div class="keypad">
+    <div class="keypad" id="keypad">
       <button onclick="press('1')">1</button>
       <button onclick="press('2')">2</button>
       <button onclick="press('3')">3</button>
@@ -99,7 +105,6 @@
   </div>
 
   <audio id="successSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
-  <audio id="errorSound" src="buzzer.mp3" preload="auto"></audio>
 
   <script>
     let codeSecret = generateCode();
@@ -128,8 +133,32 @@
       document.getElementById("message").textContent = "";
       document.getElementById("coffreBox").classList.remove("open");
       document.getElementById("porteCoffre").classList.remove("ouverte");
+      document.getElementById("keypad").classList.remove("error");
     }
 
     function checkCode() {
       if (inputCode === codeSecret) {
-        document.getElementById("message").textContent = "✅ Coffre ouvert !
+        document.getElementById("message").textContent = "✅ Coffre ouvert !";
+        document.getElementById("successSound").play();
+        document.getElementById("coffreBox").classList.add("open");
+        document.getElementById("porteCoffre").classList.add("ouverte");
+        codeSecret = generateCode();
+        console.log("Nouveau code : " + codeSecret);
+      } else {
+        document.getElementById("message").textContent = "❌ Code incorrect";
+        let keypad = document.getElementById("keypad");
+        keypad.classList.add("error");
+        setTimeout(() => {
+          keypad.classList.remove("error");
+        }, 1000);
+        document.getElementById("coffreBox").classList.remove("open");
+        document.getElementById("porteCoffre").classList.remove("ouverte");
+      }
+      inputCode = "";
+      updateDisplay();
+    }
+
+    updateDisplay();
+  </script>
+</body>
+</html>
