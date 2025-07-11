@@ -175,9 +175,9 @@
 
         setTimeout(() => {
           codeSecret = generateCode();
-          console.log("Nouveau code : " + codeSecret);
-          clearCode(); // réinitialisation visuelle
-          messageEl.textContent = "🟦 Nouveau code généré";
+          console.log("Nouveau code : " + codeSecret); // 👀 Visible en console
+          clearCode();
+          messageEl.textContent = "🟦 Nouveau code généré : " + codeSecret;
           messageEl.className = "message bleu";
         }, 5000);
       } else {
@@ -212,7 +212,6 @@
       celebration.className = "celebration";
       celebration.textContent = "✅ COFFRE OUVERT !";
       document.body.appendChild(celebration);
-
       setTimeout(() => {
         celebration.remove();
       }, 3000);
@@ -235,7 +234,7 @@
       }
     });
 
-    console.log("Code secret : " + codeSecret); // À afficher dans la console pour debug
+    console.log("Code secret : " + codeSecret); // ✅ Affiché au démarrage
   </script>
 </body>
 </html>
