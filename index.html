@@ -121,6 +121,7 @@
 
   <audio id="successSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
   <audio id="errorSound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-buzz-950.mp3" preload="auto"></audio>
+  <audio id="buzzerSound" src="https://assets.mixkit.co/sfx/preview/mixkit-buzz-alert-990.mp3" preload="auto"></audio>
 
   <script>
     let codeSecret = generateCode();
@@ -176,6 +177,12 @@
         messageEl.textContent = "❌ Code incorrect";
         messageEl.className = "message rouge";
         document.getElementById("errorSound").play();
+
+        // 🔊 Buzzer discret en plus
+        const buzzer = document.getElementById("buzzerSound");
+        buzzer.volume = 0.2;
+        buzzer.play();
+
         box.classList.remove("open");
         box.classList.add("error");
         porte.classList.remove("ouverte");
@@ -192,14 +199,15 @@
       updateDisplay();
     }
 
-    // 🧠 Activation clavier physique
     window.addEventListener("keydown", e => {
       const key = e.key;
-      if (/^[0-9]$/.test(key)) {
+      const code = e.code;
+
+      if (/^[0-9]$/.test(key) || /^Numpad[0-9]$/.test(code)) {
         press(key);
       } else if (key === "Backspace" || key.toLowerCase() === "c") {
         clearCode();
-      } else if (key === "Enter") {
+      } else if (key === "Enter" || code === "NumpadEnter") {
         checkCode();
       }
     });
