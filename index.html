@@ -170,15 +170,12 @@
         porte.classList.add("ouverte");
         messageEl.textContent = "✅ Coffre ouvert !";
         messageEl.className = "message";
-
         showCelebration();
 
         setTimeout(() => {
           codeSecret = generateCode();
-          console.log("🔐 Nouveau code : " + codeSecret);
+          console.log("🟦 Nouveau code : " + codeSecret); // ✅ Console only
           clearCode();
-          messageEl.textContent = "🟦 Nouveau code généré : " + codeSecret;
-          messageEl.className = "message bleu";
         }, 3000);
       } else {
         box.classList.remove("open");
