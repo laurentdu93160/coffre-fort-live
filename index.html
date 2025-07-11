@@ -79,7 +79,7 @@
     }
     .keypad.error {
       box-shadow: 0 0 10px 3px red;
-      animation: blinkError 0.3s alternate 3;
+      animation: blinkError 0.3s alternate 4;
     }
     @keyframes blinkError {
       to { box-shadow: 0 0 10px 6px red; }
@@ -139,16 +139,18 @@
     }
 
     function updateDisplay() {
-      let display = inputCode.padEnd(4, "_");
-      document.getElementById("codeDisplay").textContent = display;
+      document.getElementById("codeDisplay").textContent = inputCode.padEnd(4, "_");
     }
 
     function clearCode() {
       inputCode = "";
       updateDisplay();
-      document.getElementById("message").textContent = "";
-      document.getElementById("coffreBox").classList.remove("open", "error");
-      document.getElementById("porteCoffre").classList.remove("ouverte");
+      const box = document.getElementById("coffreBox");
+      const porte = document.getElementById("porteCoffre");
+      const messageEl = document.getElementById("message");
+      box.classList.remove("open", "error");
+      porte.classList.remove("ouverte");
+      messageEl.textContent = "";
     }
 
     function checkCode() {
@@ -182,11 +184,25 @@
         setTimeout(() => {
           box.classList.remove("error");
           keypad.classList.remove("error");
-        }, 1000);
+          messageEl.textContent = "";
+        }, 2000);
       }
+
       inputCode = "";
       updateDisplay();
     }
+
+    // 🧠 Activation clavier physique
+    window.addEventListener("keydown", e => {
+      const key = e.key;
+      if (/^[0-9]$/.test(key)) {
+        press(key);
+      } else if (key === "Backspace" || key.toLowerCase() === "c") {
+        clearCode();
+      } else if (key === "Enter") {
+        checkCode();
+      }
+    });
   </script>
 </body>
 </html>
