@@ -175,11 +175,11 @@
 
         setTimeout(() => {
           codeSecret = generateCode();
-          console.log("Nouveau code : " + codeSecret); // 👀 Visible en console
+          console.log("🔐 Nouveau code : " + codeSecret);
           clearCode();
           messageEl.textContent = "🟦 Nouveau code généré : " + codeSecret;
           messageEl.className = "message bleu";
-        }, 5000);
+        }, 3000);
       } else {
         box.classList.remove("open");
         box.classList.add("error");
@@ -234,7 +234,7 @@
       }
     });
 
-    console.log("Code secret : " + codeSecret); // ✅ Affiché au démarrage
+    console.log("🔐 Code secret initial : " + codeSecret);
   </script>
 </body>
 </html>
