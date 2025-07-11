@@ -29,6 +29,11 @@
       box-shadow: 0 0 40px #0f0;
       transform: scale(1.05);
     }
+    .coffre.error {
+      background: linear-gradient(to right, #f00, #333);
+      box-shadow: 0 0 40px #f00;
+      transform: scale(1.05);
+    }
     .porte {
       width: 200px;
       height: 120px;
@@ -142,7 +147,7 @@
       inputCode = "";
       updateDisplay();
       document.getElementById("message").textContent = "";
-      document.getElementById("coffreBox").classList.remove("open");
+      document.getElementById("coffreBox").classList.remove("open", "error");
       document.getElementById("porteCoffre").classList.remove("ouverte");
     }
 
@@ -170,9 +175,12 @@
         messageEl.className = "message rouge";
         document.getElementById("errorSound").play();
         box.classList.remove("open");
+        box.classList.add("error");
         porte.classList.remove("ouverte");
         keypad.classList.add("error");
+
         setTimeout(() => {
+          box.classList.remove("error");
           keypad.classList.remove("error");
         }, 1000);
       }
