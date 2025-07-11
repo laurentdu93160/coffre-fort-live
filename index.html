@@ -165,6 +165,7 @@
       const messageEl = document.getElementById("message");
 
       if (inputCode === codeSecret) {
+        box.classList.remove("error"); // ✅ correction du bug
         box.classList.add("open");
         porte.classList.add("ouverte");
         messageEl.textContent = "✅ Coffre ouvert !";
@@ -173,7 +174,7 @@
 
         setTimeout(() => {
           codeSecret = generateCode();
-          console.log("🔐 Nouveau code : " + codeSecret); // ✅ Console uniquement
+          console.log("🔐 Nouveau code : " + codeSecret); // ✅ console uniquement
           clearCode();
         }, 3000);
       } else {
@@ -182,6 +183,7 @@
         porte.classList.remove("ouverte");
         messageEl.textContent = "❌ Code incorrect";
         messageEl.className = "message rouge";
+
         setTimeout(() => {
           box.classList.remove("error");
           messageEl.textContent = "";
