@@ -1,3 +1,4 @@
+<!-- Ton fichier HTML complet avec clavier physique et visuel -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -90,12 +91,8 @@
       height: 1.5em;
       transition: color 0.3s ease;
     }
-    .message.bleu {
-      color: #00f0ff;
-    }
-    .message.rouge {
-      color: crimson;
-    }
+    .message.bleu { color: #00f0ff; }
+    .message.rouge { color: crimson; }
   </style>
 </head>
 <body>
@@ -178,7 +175,6 @@
         messageEl.className = "message rouge";
         document.getElementById("errorSound").play();
 
-        // 🔊 Buzzer discret en plus
         const buzzer = document.getElementById("buzzerSound");
         buzzer.volume = 0.2;
         buzzer.play();
