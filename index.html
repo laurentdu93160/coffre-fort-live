@@ -175,6 +175,8 @@
 
         setTimeout(() => {
           codeSecret = generateCode();
+          console.log("Nouveau code : " + codeSecret);
+          clearCode(); // réinitialisation visuelle
           messageEl.textContent = "🟦 Nouveau code généré";
           messageEl.className = "message bleu";
         }, 5000);
@@ -198,7 +200,7 @@
     function flashButton(val) {
       const buttons = document.querySelectorAll(".keypad button");
       buttons.forEach(btn => {
-        if (btn.textContent === val) {
+        if (btn.textContent === val || (val === "OK" && btn.textContent === "OK")) {
           btn.classList.add("pressed");
           setTimeout(() => btn.classList.remove("pressed"), 250);
         }
@@ -212,7 +214,7 @@
       document.body.appendChild(celebration);
 
       setTimeout(() => {
-        document.body.removeChild(celebration);
+        celebration.remove();
       }, 3000);
     }
 
@@ -226,13 +228,14 @@
         press(code.slice(6));
       } else if (key === "Backspace" || key.toLowerCase() === "c") {
         clearCode();
+        flashButton("C");
       } else if (key === "Enter" || code === "NumpadEnter") {
         checkCode();
         flashButton("OK");
       }
     });
 
-    console.log("Code secret : " + codeSecret); // Pour test
+    console.log("Code secret : " + codeSecret); // À afficher dans la console pour debug
   </script>
 </body>
 </html>
