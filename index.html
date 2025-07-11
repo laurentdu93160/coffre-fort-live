@@ -58,6 +58,7 @@
       grid-template-columns: repeat(3, 60px);
       gap: 10px;
       justify-content: center;
+      transition: box-shadow 0.3s ease;
     }
     .keypad button {
       font-size: 1.5em;
@@ -71,10 +72,24 @@
     .keypad button:hover {
       background-color: #555;
     }
+    .keypad.error {
+      box-shadow: 0 0 10px 3px red;
+      animation: blinkError 0.3s alternate 3;
+    }
+    @keyframes blinkError {
+      to { box-shadow: 0 0 10px 6px red; }
+    }
     .message {
       margin-top: 15px;
       font-size: 1.2em;
       height: 1.5em;
+      transition: color 0.3s ease;
+    }
+    .message.bleu {
+      color: #00f0ff;
+    }
+    .message.rouge {
+      color: crimson;
     }
   </style>
 </head>
@@ -82,7 +97,7 @@
   <div class="coffre" id="coffreBox">
     <div class="porte" id="porteCoffre"></div>
     <div class="display" id="codeDisplay">____</div>
-    <div class="keypad">
+    <div class="keypad" id="clavier">
       <button onclick="press('1')">1</button>
       <button onclick="press('2')">2</button>
       <button onclick="press('3')">3</button>
@@ -100,7 +115,7 @@
   </div>
 
   <audio id="successSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
-  <audio id="errorSound" src="mixkit-wrong-answer-buzz-950.mp3" preload="auto"></audio>
+  <audio id="errorSound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-buzz-950.mp3" preload="auto"></audio>
 
   <script>
     let codeSecret = generateCode();
@@ -132,18 +147,34 @@
     }
 
     function checkCode() {
+      const box = document.getElementById("coffreBox");
+      const porte = document.getElementById("porteCoffre");
+      const messageEl = document.getElementById("message");
+      const keypad = document.getElementById("clavier");
+
       if (inputCode === codeSecret) {
-        document.getElementById("message").textContent = "✅ Coffre ouvert !";
+        messageEl.textContent = "✅ Coffre ouvert !";
+        messageEl.className = "message";
         document.getElementById("successSound").play();
-        document.getElementById("coffreBox").classList.add("open");
-        document.getElementById("porteCoffre").classList.add("ouverte");
-        codeSecret = generateCode();
-        console.log("Nouveau code : " + codeSecret);
+        box.classList.add("open");
+        porte.classList.add("ouverte");
+
+        setTimeout(() => {
+          codeSecret = generateCode();
+          console.log("Nouveau code : " + codeSecret);
+          messageEl.textContent = "🟦 Nouveau code généré";
+          messageEl.className = "message bleu";
+        }, 5000);
       } else {
-        document.getElementById("message").textContent = "❌ Code incorrect";
+        messageEl.textContent = "❌ Code incorrect";
+        messageEl.className = "message rouge";
         document.getElementById("errorSound").play();
-        document.getElementById("coffreBox").classList.remove("open");
-        document.getElementById("porteCoffre").classList.remove("ouverte");
+        box.classList.remove("open");
+        porte.classList.remove("ouverte");
+        keypad.classList.add("error");
+        setTimeout(() => {
+          keypad.classList.remove("error");
+        }, 1000);
       }
       inputCode = "";
       updateDisplay();
