@@ -1,218 +1,154 @@
-<!-- Le fichier complet est prêt — voici la balise HTML d'ouverture -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Coffre-fort Réaliste</title>
+  <title>Coffre-Fort</title>
   <style>
-    /* Styles visuels globaux */
     body {
-      margin: 0;
-      background: #0f111a;
-      font-family: sans-serif;
+      background-color: #111;
+      color: #fff;
+      font-family: monospace;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       height: 100vh;
+      margin: 0;
     }
-    #coffre {
-      position: relative;
-      width: 400px;
-      height: 400px;
-      background: #333;
-      border-radius: 12px;
-      box-shadow: 0 0 25px #000 inset, 0 0 15px #0f0; /* halo vert */
-      padding: 20px;
-      transition: box-shadow 0.5s ease;
+    .coffre {
+      background: #222;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #000;
+      text-align: center;
+      transition: all 0.5s ease;
     }
-    .halo-actif {
-      box-shadow: 0 0 60px 15px #0f0;
-    }
-    .poignee {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: #aaa;
-      position: absolute;
-      top: 50px;
-      left: 320px;
-      transform-origin: center;
-      transition: transform 1s ease;
-    }
-    .poignee.tourne {
-      transform: rotate(90deg);
+    .coffre.open {
+      background: linear-gradient(to right, #0f0, #333);
+      box-shadow: 0 0 40px #0f0;
+      transform: scale(1.05);
     }
     .porte {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #444;
-      border-radius: 12px;
-      transform-origin: left;
-      transition: transform 1s ease;
-      z-index: 2;
+      width: 200px;
+      height: 100px;
+      background-color: #444;
+      border: 5px solid #222;
+      border-radius: 8px;
+      margin: 20px auto;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+      transform-origin: left center;
     }
     .porte.ouverte {
-      transform: rotateY(-100deg);
+      transform: rotateY(100deg);
+      opacity: 0.4;
     }
-    .led {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      margin: 10px auto;
-      opacity: 0;
+    .display {
+      font-size: 2em;
+      background: #000;
+      color: #0f0;
+      padding: 10px 20px;
+      margin-bottom: 20px;
+      border: 2px solid #0f0;
+      border-radius: 5px;
+      letter-spacing: 10px;
     }
-    .led.verte { background: limegreen; }
-    .led.rouge { background: crimson; }
-    .clignote {
-      animation: blink 0.3s alternate 6;
-    }
-    @keyframes blink { to { opacity: 1; } }
-    .code { font-size: 20px; letter-spacing: 8px; text-align: center; color: #fff; margin-bottom: 10px; }
-    .clavier {
+    .keypad {
       display: grid;
-      grid-template-columns: repeat(3, 90px);
-      grid-gap: 12px;
+      grid-template-columns: repeat(3, 60px);
+      gap: 10px;
       justify-content: center;
-      margin-bottom: 10px;
     }
-    .touche {
-      padding: 20px;
-      font-size: 22px;
-      background: #555;
+    .keypad button {
+      font-size: 1.5em;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      background-color: #333;
       color: #fff;
-      border-radius: 10px;
       cursor: pointer;
-      box-shadow: 0 4px #222;
-      user-select: none;
-      transition: background 0.3s;
     }
-    .touche:active {
-      background: #777;
+    .keypad button:hover {
+      background-color: #555;
     }
-    #messageCode {
-      text-align: center;
-      font-size: 16px;
-      margin-top: 5px;
-      font-weight: bold;
+    .message {
+      margin-top: 15px;
+      font-size: 1.2em;
+      height: 1.5em;
     }
-    .vert { color: limegreen; }
-    .rouge { color: crimson; }
-    .bleu { color: #00f0ff; }
   </style>
 </head>
 <body>
-  <div id="coffre">
-    <div class="porte" id="porte"></div>
-    <div class="poignee" id="poignee"></div>
-    <div class="code" id="afficheCode">____</div>
-    <div class="led verte" id="ledVerte"></div>
-    <div class="led rouge" id="ledRouge"></div>
-    <div class="clavier" id="clavier">
-      <div class="touche">1</div><div class="touche">2</div><div class="touche">3</div>
-      <div class="touche">4</div><div class="touche">5</div><div class="touche">6</div>
-      <div class="touche">7</div><div class="touche">8</div><div class="touche">9</div>
-      <div class="touche" data-action="clear">Effacer</div>
-      <div class="touche">0</div>
-      <div class="touche" data-action="ok">OK</div>
+  <div class="coffre" id="coffreBox">
+    <div class="porte" id="porteCoffre"></div>
+    <div class="display" id="codeDisplay">____</div>
+    <div class="keypad">
+      <button onclick="press('1')">1</button>
+      <button onclick="press('2')">2</button>
+      <button onclick="press('3')">3</button>
+      <button onclick="press('4')">4</button>
+      <button onclick="press('5')">5</button>
+      <button onclick="press('6')">6</button>
+      <button onclick="press('7')">7</button>
+      <button onclick="press('8')">8</button>
+      <button onclick="press('9')">9</button>
+      <button onclick="clearCode()">C</button>
+      <button onclick="press('0')">0</button>
+      <button onclick="checkCode()">OK</button>
     </div>
-    <div id="messageCode"></div>
-    <audio id="sonOuverture" src="https://assets.mixkit.co/sfx/preview/mixkit-lock-opening-2870.mp3"></audio>
+    <div class="message" id="message"></div>
   </div>
 
+  <audio id="successSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
+  <audio id="errorSound" src="wrong-buzzer.mp3" preload="auto"></audio>
+
   <script>
-    let codeSecret = genererCode();
-    console.log("Code secret :", codeSecret);
-    let entreCode = [];
-    const afficheCode = document.getElementById("afficheCode");
-    const clavier = document.getElementById("clavier");
-    const ledVerte = document.getElementById("ledVerte");
-    const ledRouge = document.getElementById("ledRouge");
-    const son = document.getElementById("sonOuverture");
-    const poignee = document.getElementById("poignee");
-    const porte = document.getElementById("porte");
-    const message = document.getElementById("messageCode");
-    const coffre = document.getElementById("coffre");
+    let codeSecret = generateCode();
+    console.log("Code secret : " + codeSecret); // Affiché dans F12
+    let inputCode = "";
 
-    function genererCode() {
-      return String(Math.floor(1000 + Math.random() * 9000));
+    function generateCode() {
+      return Math.floor(1000 + Math.random() * 9000).toString();
     }
 
-    function mettreAJourAffichage() {
-      afficheCode.textContent = entreCode.join('').padEnd(4, '_');
+    function press(num) {
+      if (inputCode.length < 4) {
+        inputCode += num;
+        updateDisplay();
+      }
     }
 
-    function afficherMessage(txt, couleur, duree) {
-      message.textContent = txt;
-      message.className = couleur;
-      setTimeout(() => message.textContent = "", duree);
+    function updateDisplay() {
+      let display = inputCode.padEnd(4, "_");
+      document.getElementById("codeDisplay").textContent = display;
     }
 
-    function verifieCode() {
-      if (entreCode.join('') === codeSecret) {
-        ledVerte.classList.add("clignote");
-        coffre.classList.add("halo-actif");
-        poignee.classList.add("tourne");
-        porte.classList.add("ouverte");
-        son.play();
-        afficherMessage("Coffre déverrouillé", "vert", 5000);
-        setTimeout(() => {
-          porte.classList.remove("ouverte");
-          poignee.classList.remove("tourne");
-          ledVerte.classList.remove("clignote");
-          coffre.classList.remove("halo-actif");
-          codeSecret = genererCode();
-          console.log("Code secret :", codeSecret);
-          afficherMessage("Nouveau code généré", "bleu", 2000);
-          entreCode = [];
-          mettreAJourAffichage();
-        }, 5000);
+    function clearCode() {
+      inputCode = "";
+      updateDisplay();
+      document.getElementById("message").textContent = "";
+      document.getElementById("coffreBox").classList.remove("open");
+      document.getElementById("porteCoffre").classList.remove("ouverte");
+    }
+
+    function checkCode() {
+      if (inputCode === codeSecret) {
+        document.getElementById("message").textContent = "✅ Coffre ouvert !";
+        document.getElementById("successSound").play();
+        document.getElementById("coffreBox").classList.add("open");
+        document.getElementById("porteCoffre").classList.add("ouverte");
+        codeSecret = generateCode();
+        console.log("Nouveau code : " + codeSecret);
       } else {
-        ledRouge.classList.add("clignote");
-        afficherMessage("Code incorrect", "rouge", 1200);
-        setTimeout(() => {
-          ledRouge.classList.remove("clignote");
-          entreCode = [];
-          mettreAJourAffichage();
-        }, 1200);
+        document.getElementById("message").textContent = "❌ Code incorrect";
+        document.getElementById("errorSound").play();
+        document.getElementById("coffreBox").classList.remove("open");
+        document.getElementById("porteCoffre").classList.remove("ouverte");
       }
+      inputCode = "";
+      updateDisplay();
     }
 
-    clavier.addEventListener("click", e => {
-      const txt = e.target.textContent;
-      if (!e.target.classList.contains("touche")) return;
-
-      if (e.target.dataset.action === "clear") {
-        entreCode = [];
-        mettreAJourAffichage();
-      } else if (e.target.dataset.action === "ok") {
-        if (entreCode.length === 4) verifieCode();
-      } else {
-        if (entreCode.length < 4) {
-          entreCode.push(txt);
-          mettreAJourAffichage();
-        }
-      }
-    });
-
-    window.addEventListener("keydown", e => {
-      const key = e.key;
-      if (/^[0-9]$/.test(key)) {
-        if (entreCode.length < 4) {
-          entreCode.push(key);
-          mettreAJourAffichage();
-        }
-      } else if (key === "Backspace") {
-        entreCode = [];
-        mettreAJourAffichage();
-      } else if (key === "Enter") {
-        if (entreCode.length === 4) verifieCode();
-      }
-    });
-
-    mettreAJourAffichage();
+    updateDisplay();
   </script>
 </body>
 </html>
