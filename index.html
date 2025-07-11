@@ -87,7 +87,6 @@
       height: 1.5em;
       transition: all 0.4s ease;
     }
-    .message.bleu { color: #00f0ff; }
     .message.rouge { color: crimson; }
     .celebration {
       position: absolute;
@@ -174,7 +173,7 @@
 
         setTimeout(() => {
           codeSecret = generateCode();
-          console.log("🟦 Nouveau code : " + codeSecret); // ✅ Console only
+          console.log("🔐 Nouveau code : " + codeSecret); // ✅ Console uniquement
           clearCode();
         }, 3000);
       } else {
@@ -183,7 +182,6 @@
         porte.classList.remove("ouverte");
         messageEl.textContent = "❌ Code incorrect";
         messageEl.className = "message rouge";
-
         setTimeout(() => {
           box.classList.remove("error");
           messageEl.textContent = "";
