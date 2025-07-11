@@ -22,6 +22,7 @@
       box-shadow: 0 0 20px #000;
       text-align: center;
       transition: all 0.5s ease;
+      position: relative;
     }
     .coffre.open {
       background: linear-gradient(to right, #0f0, #333);
@@ -30,17 +31,17 @@
     }
     .porte {
       width: 200px;
-      height: 100px;
-      background-color: #444;
-      border: 5px solid #222;
-      border-radius: 8px;
+      height: 120px;
+      background-color: #555;
+      border: 5px solid #333;
+      border-radius: 10px;
       margin: 20px auto;
       transition: transform 0.5s ease, opacity 0.5s ease;
       transform-origin: left center;
     }
     .porte.ouverte {
-      transform: rotateY(100deg);
-      opacity: 0.4;
+      transform: rotateY(120deg);
+      opacity: 0.3;
     }
     .display {
       font-size: 2em;
@@ -99,11 +100,11 @@
   </div>
 
   <audio id="successSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
-  <audio id="errorSound" src="wrong-buzzer.mp3" preload="auto"></audio>
+  <audio id="errorSound" src="mixkit-wrong-answer-buzz-950.mp3" preload="auto"></audio>
 
   <script>
     let codeSecret = generateCode();
-    console.log("Code secret : " + codeSecret); // Affiché dans F12
+    console.log("Code secret : " + codeSecret);
     let inputCode = "";
 
     function generateCode() {
@@ -147,8 +148,6 @@
       inputCode = "";
       updateDisplay();
     }
-
-    updateDisplay();
   </script>
 </body>
 </html>
